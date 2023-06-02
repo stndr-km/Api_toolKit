@@ -19,4 +19,6 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("api/", include("api.urls")),
+    path('equifax/', include("equifaxApi.urls")),
+    path('dedupe/', include("dedupe_check.urls")),
 ]

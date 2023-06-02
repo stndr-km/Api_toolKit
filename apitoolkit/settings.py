@@ -38,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'api'
+    'api',
+    'equifaxApi',
+    'dedupe_check',
 ]
 
 MIDDLEWARE = [
@@ -85,14 +87,14 @@ DATABASES = {
         "PASSWORD": "root",
     },
 
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.postgresql',
-    #     'NAME': "ai_arthapp_live",
-    #     'USER': "ai_arthapp",
-    #     'PASSWORD': "0M6kio!365p5*P",
-    #     'HOST': "arthapp-db.crg3nydbfbc4.ap-south-1.rds.amazonaws.com",
-    #     'PORT': "5432"
-    # }
+    'data_science': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': "data_science",
+        'USER': "ai_tech",
+        'PASSWORD': "mSwteJWWWJY",
+        'HOST': "103.104.74.236",
+        'PORT': "5432"
+    }
 }
 
 
