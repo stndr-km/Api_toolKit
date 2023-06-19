@@ -17,15 +17,23 @@ class FacematchingView(generics.CreateAPIView):
     queryset=Facematching.objects.all()
     serializer_class = FaceMatchingSerializer
     
-
     def post(self,request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+
+        user = request.user  # Get the current user
+        serializer.validated_data['user'] = user
+
+        
+
         face_matching=Facematching()
         image1 = face_recognition.load_image_file(request.FILES.get('image1'))
         image2 = face_recognition.load_image_file(request.FILES.get('image2'))
     
         face_matching.image1=request.data.get("image1")
         face_matching.image2=request.data.get("image2")
-
+        
         # Detect the faces in each image
         face_locations1 = face_recognition.face_locations(image1)
         face_encodings1 = face_recognition.face_encodings(image1, face_locations1)
@@ -50,6 +58,7 @@ class FacematchingView(generics.CreateAPIView):
                     'developer_message': 'The faces match with a certainty of {}%.'.format(match_percentage)
                 }
                 face_matching.message='The faces match with a certainty of {}%.'.format(match_percentage)
+                face_matching.user = user
                 face_matching.save()
                 return Response(response_data, status=status.HTTP_201_CREATED)
             else:
@@ -62,7 +71,7 @@ class FacematchingView(generics.CreateAPIView):
                     'developer_message': 'The faces do not match.'
                 }
                 face_matching.message='The faces is not matching with a certainty of {}%. '.format(match_perc)
-
+                face_matching.user = user
                 face_matching.save()
                 return Response(response_data, status=status.HTTP_200_OK)
             
@@ -75,18 +84,24 @@ class FacematchingView(generics.CreateAPIView):
             }
             return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
         
+
 class StringMatchingView(generics.CreateAPIView):
 
     queryset=StringMatching.objects.all()
     serializer_class=StringMatchingSerializer
-    permission_classes=[IsAuthenticated]
+    # permission_classes=[IsAuthenticated]/
 
     def post(self,request ,*args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-        name1=request.data.get("name1")
-        name2=request.data.get("name2")
 
         if serializer.is_valid():
+            user = request.user  # Get the current user
+            serializer.validated_data['user'] = user
+
+            name1=request.data.get("name1")
+            name2=request.data.get("name2")
+
+        
             print("valid")
             string_matching=StringMatching()
             
@@ -97,7 +112,7 @@ class StringMatchingView(generics.CreateAPIView):
 
             string_matching.match_percentage=similarity_ratio
             print(string_matching.name1,similarity_ratio)
-
+            string_matching.user = user
             string_matching.save()
             
             if similarity_ratio>70:

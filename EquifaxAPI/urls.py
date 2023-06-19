@@ -7,6 +7,6 @@ from EquifaxAPI.views import EquifaxAPI
 
 urlpatterns = [
     
-    path('bureauscore/', EquifaxAPI.as_view())
+    path('bureauscore/', EquifaxAPI.as_view()),
 
 ]
