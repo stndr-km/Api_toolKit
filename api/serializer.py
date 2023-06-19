@@ -1,33 +1,34 @@
 from rest_framework import serializers
-from api.models import API,UserSelectedAPI
+from django.contrib.auth import get_user_model
+from rest_framework import serializers
+from api.models import CustomAPI, UserSelectedAPI
+from users.models import CustomUser
+from django.contrib.auth.models import User
 
-class APISerializer(serializers.ModelSerializer):
+
+class CustomAPISerializer(serializers.ModelSerializer):
     class Meta:
-        model = API
+        model = CustomAPI
         fields = '__all__'
 
 
-class APISelectionSerializer(serializers.Serializer):
-    selected_apis = serializers.ListField(child=serializers.IntegerField())
 
-    
-class SelectAPISerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserSelectedAPI
-        fields = '__all__'
-
-class UserSelectedAPISerializer(serializers.ModelSerializer):
-    user_name = serializers.CharField(source='user.username')
-    api_names = serializers.SerializerMethodField()
-    endpoints = serializers.SerializerMethodField()
-    # api_name = serializers.ReadOnlyField(source='apis.name')
+class UserSelectedAPISerializer(serializers.ModelSerializer):   
+    user = serializers.PrimaryKeyRelatedField(queryset=CustomUser.objects.all())
+    api = serializers.PrimaryKeyRelatedField(
+        queryset=CustomAPI.objects.all(),
+        many=True,
+        write_only=True
+    )
 
     class Meta:
         model = UserSelectedAPI
-        fields = ['user', 'user_name', 'api_names', 'endpoints']
+        fields = ['user', 'api']
 
-    def get_api_names(self, obj):
-        return [api.name for api in obj.api.all()]
+    def create(self, validated_data):
+        api_data = validated_data.pop('api')
+        user_selected_api = UserSelectedAPI.objects.create(**validated_data)
+        for api in api_data:
+            user_selected_api.api.add(api)
+        return user_selected_api
 
-    def get_endpoints(self, obj):
-        return [api.endpoint for api in obj.api.all()]
