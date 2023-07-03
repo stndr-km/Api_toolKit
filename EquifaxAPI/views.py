@@ -1,7 +1,6 @@
 from rest_framework import generics
 import requests
 from django.http import JsonResponse
-
 import dotenv
 import json
 import os
@@ -15,7 +14,7 @@ class EquifaxAPI(generics.CreateAPIView):
     serializer_class=EquifaxResponseSerializer
 
     def post(self, request):
-        dotenv.load_dotenv("/home/abhishek/Desktop/drfx-new/.env")  # Load environment variables from .env file
+        dotenv.load_dotenv(".env")  # Load environment variables from .env file
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = request.user  # Get the current user
@@ -82,7 +81,7 @@ class EquifaxAPI(generics.CreateAPIView):
 
         # Make the POST request
 
-        url = "https://eportuat.equifax.co.in/cir360Report/cir360Report"
+        url = os.getenv("equifax_url")#"https://eportuat.equifax.co.in/cir360Report/cir360Report"
         headers = {"Content-Type": "application/json"}
         response = requests.post(url, json=payload, headers=headers)
         
