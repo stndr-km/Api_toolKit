@@ -10,4 +10,6 @@ urlpatterns = [
     path('equifax/',include('EquifaxAPI.urls')),
     path('face_name_match/',include('face_name_match.urls')),
     path('users/', include('users.urls')),
+    path('paywitheasebuzz/',include('paywitheasebuzz.urls')),
+    path('surepass/',include('surepass.urls')),
 ]

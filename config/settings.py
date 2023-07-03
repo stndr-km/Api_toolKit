@@ -1,8 +1,9 @@
+import os
 from pathlib import Path
 # import datetime
 import dotenv
 
-dotenv.load_dotenv("/home/abhishek/Desktop/drfx-new/.env")
+dotenv.load_dotenv("/home/satendrakumar/Api_toolKit/.env")
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
@@ -41,7 +42,9 @@ INSTALLED_APPS = [
     'users',
     'drf_yasg2',
     'EquifaxAPI',
-    'face_name_match'
+    'face_name_match',
+    'paywitheasebuzz',
+    'surepass'
 ]
 
 MIDDLEWARE = [
@@ -127,6 +130,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'assets'),
+)
+
 
 AUTH_USER_MODEL = 'users.CustomUser'
 
